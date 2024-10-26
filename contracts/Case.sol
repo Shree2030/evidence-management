@@ -118,7 +118,9 @@ contract Case{
         require(is_level_assigned(case_num,ev) == false, "Level assigned" );
         setlevel(ev, case_num);
     }
-    function register_evi(uint case_num, bytes32 ev, address user)public payable{ // simple register
+
+    ///@notice simple registeration of new evidence 
+    function register_evi(uint case_num, bytes32 ev, address user)public payable{ 
 
         require(does_case_exists(case_num) == true , "Case does not exists");
         require(does_evidence_exists(case_num,ev) == false , "Evidence exists");
