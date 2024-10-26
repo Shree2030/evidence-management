@@ -3,19 +3,21 @@ pragma solidity ^0.8.17;
 
 import "./AssignRole.sol";
 import "./Case.sol";
+
+
 contract BibaAppend{
    //AssignLevel public evidence; // contract instance
    AssignRole public  user;
    Case public scase;
-   mapping (bytes32 => mapping(uint => bytes32)) public AppendedEvidence;  // keep track of which evidence was appended to, but an evidence can be appended to multiple times
    
-   //find a new structure for this? nested mapping (bytes32 (og_key) => mapping(uint => newhash)) 
+   // keep track of which evidence was appended to, but an evidence can be appended to multiple times
+   mapping (bytes32 => mapping(uint => bytes32)) public AppendedEvidence;  
+    
    //use another mapping to keep track of how many times a evidence was appended to 
-   
-   mapping (bytes32 =>uint) public TrackerMapping; // keep track of how many times and evidence was appended to 
+   mapping (bytes32 =>uint) public TrackerMapping; 
    
    //Evidence public evidence;
-   event AppendAllowed(string, address, bytes32, bytes32); // event for blockchain
+   event AppendAllowed(string, address, bytes32, bytes32); 
    
    constructor( address _assignRole, address _case){
     //evidence = AssignLevel(_assignLevel);
@@ -23,8 +25,9 @@ contract BibaAppend{
     scase = Case(_case);
     //create = Evidence()
    }
-
-   function returnTimes(bytes32 key) public view returns(uint){  // return number of times an evidence was appended to
+   ///@notice returns number of times an evidence had additional information added 
+   ///@param key required to uniquely identify a case
+   function returnTimes(bytes32 key) public view returns(uint){  
       return TrackerMapping[key];
    }
 
@@ -42,7 +45,8 @@ contract BibaAppend{
     
     bytes32 newhash  = keccak256(abi.encodePacked(key,key_of_new)); // calculate new hash
     string memory str = "Hell";
-    scase.register_evi(case_num, str, msg.sender); // create a new evidence with new founf evidence related to og evidence
+    bytes32 evi = keccak256(abi.encode(str));
+    scase.register_evi(case_num, evi, msg.sender); // create a new evidence with new founf evidence related to og evidence
     
     AppendedEvidence[key][ntime] = newhash; // finally add the appended evidence in the nested mapping 
     emit AppendAllowed("User has appended to evidence", ad_user, key, newhash);
